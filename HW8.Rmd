@@ -1,0 +1,103 @@
+---
+title: "Homework 8"
+author: "Mahima Mahajan"
+date: "2025-04-11"
+output:
+  pdf_document: default
+  html_document: default
+---
+# **EID :** mkm4582
+# **[GitHub repo link (CLICK)](https://github.com/mahimaKmahajan/SDS_315_HW8)**
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
+options(warn=-1)
+
+library(boot)
+library(tidyverse)
+library(ggplot2)
+library(dplyr)
+```
+
+# **Problem 1.** regression warm up
+
+## Part A
+```{r, echo=FALSE, results=FALSE}
+creatinine <- read.csv("creatinine.csv")
+
+linReg <- lm(creatclear ~ age, data = creatinine)
+
+summary(linReg)
+```
+When we use the lm() function calculator in R, a linear regression model, we get the output of 147.81 as the intercept and -0.61 as the rate of creatine clearance in patients depending on age. This gives us the equation *creatclear = -0.62(age) + 147.81*. Using this equation, when a patients age is 55, their expected creatine clearnace rate is about 113.72 mL/min. 
+
+## Part B
+
+When we use the lm() function in R, the summary displaces the rate-- which we used in Part A. The creatine clearance rate is -0.62 mL/min per year, which means that a patient's creatine clearance rate decreases by about 0.62 mL/min every year. 
+
+## Part C
+
+Using the equation from Part A: _creatclear = -0.62(age) + 147.81_
+
+**40 year-old patient calculations:**
+
+creatclear = -0.62(age) + 147.81
+
+135 = -0.62(40) + 147.81
+
+135 > 123.01
+
+Difference = 11.99
+
+**60 year-old patient calculations:**
+
+creatclear = -0.62(age) + 147.81
+
+112 = -0.62(60) + 147.81
+
+112 > 110.61
+
+Difference = 1.39
+
+The 40 year-old is healthier for their age because their creatine clearance is 11.99 higher than expected, compared to the 1.39 difference from the 60 year-old patient.
+
+# **Problem 2.** Modeling disease growth
+
+```{r, echo=FALSE, results=FALSE}
+covid <- read.csv("covid.csv")
+
+# Italy exponential growth model
+italy <- lm(log(deaths) ~ days_since_first_death, data = covid %>% filter(country == "Italy"))
+summary(italy)
+
+# Spain exponential growth model
+spain <- lm(log(deaths) ~ days_since_first_death, data = covid %>% filter(country == "Spain"))
+summary(spain)
+```
+
+## Part 1
+For Italy, the estimated growth rate for deaths caused by COVID is 0.183 and the doubling time is 3.8 days. 
+
+## Part 2
+For Spain, the estimated growth rate for deaths caused by COVID is 0.276 and the doubling time is 2.5 days. 
+
+## Part 3
+```{r, echo=FALSE}
+ggplot(covid, aes(x = days_since_first_death, y = deaths, color = country)) + geom_line() + labs(title = "Reported COVID Deaths over Time", x = "Days Since First Death", y = "Daily Deaths over Time", color = "Country")
+
+```
+
+# **Problem 3.** price elasticity of demand
+```{r, echo=FALSE, results=FALSE}
+milk <- read.csv("milk.csv")
+
+milk <- milk %>%
+  mutate(log_price = log(price),
+         log_sales = log(sales))
+
+model <- lm(log_sales ~ log_price, data = milk)
+summary(model)
+
+```
+
+The estimated price of elasticity of demand for milk is -1.62. 
